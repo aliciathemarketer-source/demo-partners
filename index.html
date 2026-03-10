@@ -3,1341 +3,914 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>IntellaBooks - Your Silent Partner</title>
+    <title>Intellabooks — Your Silent Partner</title>
+    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@700;800&family=DM+Sans:wght@300;400;500;600&display=swap" rel="stylesheet">
     <style>
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-        }
+        *, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
 
         :root {
             --navy: #013356;
+            --navy-deep: #011f35;
             --gold: #D4AF37;
+            --gold-light: #e8c94a;
+            --cyan: #00D9FF;
+            --pink: #FF85A2;
+            --orchid: #C3A5EC;
             --white: #FFFFFF;
-            --light-gray: #F5F5F7;
-            --dark-gray: #1D1D1F;
+            --pink-white: #FFF0F3;
+            --gray: #F5F5F7;
+            --muted: #6E6E73;
             --accent: #0071E3;
         }
 
+        html { scroll-behavior: smooth; }
+
         body {
-            font-family: -apple-system, BlinkMacSystemFont, 'SF Pro Display', 'Segoe UI', sans-serif;
+            font-family: 'DM Sans', sans-serif;
             background: var(--white);
-            color: var(--dark-gray);
+            color: #1D1D1F;
             overflow-x: hidden;
-            scroll-behavior: smooth;
         }
 
+        /* NAV DOTS */
+        .nav-dots {
+            position: fixed;
+            right: 1.5rem;
+            top: 50%;
+            transform: translateY(-50%);
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+            z-index: 1000;
+        }
+        .nav-dot {
+            width: 8px; height: 8px;
+            border-radius: 50%;
+            background: rgba(1,51,86,0.25);
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+        .nav-dot.active {
+            background: var(--gold);
+            transform: scale(1.5);
+        }
+
+        /* SLIDES */
         .slide {
             min-height: 100vh;
             display: flex;
             flex-direction: column;
             justify-content: center;
             align-items: center;
-            padding: 4rem 2rem;
+            padding: 5rem 3rem;
             position: relative;
+            overflow: hidden;
             opacity: 0;
-            transform: translateY(20px);
-            animation: fadeInUp 0.8s ease forwards;
+            transform: translateY(24px);
+            transition: opacity 0.7s ease, transform 0.7s ease;
         }
+        .slide.visible { opacity: 1; transform: translateY(0); }
 
-        @keyframes fadeInUp {
-            to {
-                opacity: 1;
-                transform: translateY(0);
-            }
-        }
-
-        .slide-number {
+        .slide-num {
             position: absolute;
             top: 2rem;
-            right: 2rem;
-            font-size: 0.875rem;
-            color: #86868B;
-            font-weight: 300;
+            left: 2.5rem;
+            font-size: 0.7rem;
+            letter-spacing: 0.2em;
+            color: rgba(255,255,255,0.3);
+            font-weight: 500;
+            text-transform: uppercase;
         }
+        .slide-num.dark { color: rgba(1,51,86,0.25); }
 
-        h1 {
-            font-size: clamp(3rem, 8vw, 6rem);
-            font-weight: 700;
-            letter-spacing: -0.02em;
-            line-height: 1.05;
-            margin-bottom: 1.5rem;
-            text-align: center;
-            max-width: 1200px;
+        /* ===================== SLIDE 1 — HERO ===================== */
+        .s1 {
+            background: var(--navy-deep);
+            background-image:
+                radial-gradient(ellipse 60% 50% at 70% 40%, rgba(0,217,255,0.08) 0%, transparent 60%),
+                radial-gradient(ellipse 40% 40% at 20% 60%, rgba(212,175,55,0.06) 0%, transparent 50%);
         }
-
-        h2 {
-            font-size: clamp(2rem, 5vw, 3.5rem);
-            font-weight: 600;
-            letter-spacing: -0.015em;
-            line-height: 1.1;
-            margin-bottom: 1rem;
-            text-align: center;
-        }
-
-        h3 {
-            font-size: clamp(1.5rem, 3vw, 2rem);
-            font-weight: 600;
-            margin-bottom: 1rem;
-        }
-
-        p, li {
-            font-size: clamp(1.125rem, 2vw, 1.5rem);
-            font-weight: 300;
-            line-height: 1.5;
-            color: #6E6E73;
-        }
-
-        .accent-gold {
-            color: var(--gold);
-        }
-
-        .hero-subtitle {
-            font-size: clamp(1.25rem, 2.5vw, 1.75rem);
-            color: #6E6E73;
-            max-width: 800px;
-            text-align: center;
-            margin-top: 1rem;
-            font-weight: 300;
-        }
-
-        /* Slide 1 - Opening */
-        .slide-1 {
-            background: linear-gradient(135deg, var(--navy) 0%, #024A77 100%);
-        }
-
-        .slide-1 h1,
-        .slide-1 .hero-subtitle {
-            color: var(--white);
-        }
-
-        .hourglass-icon {
-            font-size: 6rem;
-            margin-bottom: 2rem;
-            animation: float 3s ease-in-out infinite;
-        }
-
-        @keyframes float {
-            0%, 100% { transform: translateY(0); }
-            50% { transform: translateY(-20px); }
-        }
-
-        /* Problem Slides */
-        .problem-slide {
-            background: var(--light-gray);
-        }
-
-        .problem-card {
-            background: white;
-            padding: 3rem;
-            border-radius: 24px;
-            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.08);
-            max-width: 900px;
-            width: 100%;
-            margin-top: 2rem;
-        }
-
-        .problem-icon {
-            font-size: 4rem;
-            margin-bottom: 2rem;
-        }
-
-        /* Transition */
-        .slide-5 {
-            background: linear-gradient(to bottom, var(--light-gray) 0%, var(--white) 100%);
-        }
-
-        .key-icon {
+        .s1-icon {
             font-size: 5rem;
-            margin: 2rem 0;
-            animation: glow 2s ease-in-out infinite;
+            margin-bottom: 2rem;
+            animation: float 4s ease-in-out infinite;
+            filter: drop-shadow(0 0 30px rgba(212,175,55,0.4));
         }
-
-        @keyframes glow {
-            0%, 100% { filter: drop-shadow(0 0 10px rgba(212, 175, 55, 0.3)); }
-            50% { filter: drop-shadow(0 0 30px rgba(212, 175, 55, 0.6)); }
+        @keyframes float {
+            0%,100% { transform: translateY(0) rotate(-3deg); }
+            50% { transform: translateY(-18px) rotate(3deg); }
         }
-
-        /* Hero Product */
-        .slide-6 {
-            background: var(--navy);
-        }
-
-        .slide-6 h1,
-        .slide-6 .hero-subtitle {
+        .s1 h1 {
+            font-family: 'DM Sans', sans-serif;
+            font-size: clamp(3rem, 7vw, 6.5rem);
             color: var(--white);
+            text-align: center;
+            line-height: 1.05;
+            max-width: 900px;
+            margin-bottom: 1.5rem;
         }
-
-        .dashboard-mockup {
-            width: 90%;
-            max-width: 1200px;
-            margin-top: 3rem;
-            border-radius: 24px;
-            box-shadow: 0 40px 100px rgba(0, 0, 0, 0.3);
-            overflow: hidden;
-            background: white;
-        }
-
-        .dashboard-mockup img {
-            width: 100%;
-            height: auto;
-            display: block;
-        }
-
-        /* Feature Grid */
-        .feature-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
-            gap: 2rem;
-            max-width: 1200px;
-            width: 100%;
-            margin-top: 3rem;
-        }
-
-        .feature-card {
-            background: white;
-            padding: 2.5rem;
-            border-radius: 20px;
-            box-shadow: 0 10px 40px rgba(0, 0, 0, 0.06);
-            transition: transform 0.3s ease, box-shadow 0.3s ease;
-        }
-
-        .feature-card:hover {
-            transform: translateY(-8px);
-            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.12);
-        }
-
-        .feature-icon {
-            font-size: 3rem;
-            margin-bottom: 1rem;
-        }
-
-        .feature-card h3 {
-            font-size: 1.5rem;
-            color: var(--navy);
-            margin-bottom: 0.75rem;
-        }
-
-        .feature-card p {
-            font-size: 1rem;
+        .s1 h1 span { color: var(--gold); }
+        .s1 p {
+            font-size: clamp(1rem, 2vw, 1.4rem);
+            color: rgba(255,255,255,0.6);
+            text-align: center;
+            max-width: 600px;
+            font-weight: 300;
             line-height: 1.6;
         }
+        .s1-line { width: 60px; height: 2px; background: var(--gold); margin: 2rem auto; opacity: 0.6; }
 
-        .tech-note {
-            font-size: 0.875rem;
-            color: #86868B;
-            font-style: italic;
-            margin-top: 0.5rem;
+        /* ===================== SHARED ===================== */
+        .s-problem { background: var(--gray); }
+
+        .section-label {
+            font-size: 0.7rem;
+            letter-spacing: 0.25em;
+            text-transform: uppercase;
+            color: var(--accent);
+            font-weight: 600;
+            margin-bottom: 1rem;
+        }
+        .section-label.gold { color: var(--gold); }
+
+        .slide h2 {
+            font-family: 'DM Sans', sans-serif;
+            font-size: clamp(2rem, 4.5vw, 3.5rem);
+            color: var(--navy);
+            text-align: center;
+            line-height: 1.1;
+            max-width: 900px;
+            margin-bottom: 1rem;
         }
 
-        /* Pricing Card */
-        .pricing-card {
+        .card {
             background: white;
-            padding: 2.5rem;
             border-radius: 24px;
-            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.08);
+            padding: 3rem;
             max-width: 800px;
             width: 100%;
+            box-shadow: 0 20px 60px rgba(1,51,86,0.08);
             margin-top: 2rem;
         }
+        .card-icon { font-size: 3.5rem; margin-bottom: 1.5rem; }
+        .card h3 {
+            font-family: 'DM Sans', sans-serif;
+            font-size: 1.5rem;
+            color: var(--navy);
+            margin-bottom: 1rem;
+        }
+        .card p { font-size: 1.05rem; color: var(--muted); line-height: 1.7; }
+        .card ul { list-style: none; margin-top: 1.2rem; }
+        .card ul li {
+            font-size: 1rem;
+            color: var(--muted);
+            padding: 0.5rem 0;
+            display: flex;
+            align-items: flex-start;
+            gap: 0.75rem;
+            border-bottom: 1px solid #f0f0f5;
+        }
+        .card ul li:last-child { border-bottom: none; }
+        .card ul li::before { content: "→"; color: var(--navy); font-weight: 600; flex-shrink: 0; }
+        .card ul li strong { color: var(--navy); }
 
-        .price-highlight {
-            font-size: 1.25rem;
-            color: var(--gold);
-            font-weight: 600;
-            margin: 1rem 0;
+        /* ===================== TRANSITION ===================== */
+        .s-transition { background: linear-gradient(160deg, var(--gray) 0%, white 100%); }
+        .s-transition h2 { font-size: clamp(1.8rem, 4vw, 3.2rem); max-width: 800px; }
+        .key-glow {
+            font-size: 5rem;
+            margin: 2rem 0;
+            animation: glow-pulse 2.5s ease-in-out infinite;
+        }
+        @keyframes glow-pulse {
+            0%,100% { filter: drop-shadow(0 0 10px rgba(212,175,55,0.2)); transform: scale(1); }
+            50% { filter: drop-shadow(0 0 35px rgba(212,175,55,0.6)); transform: scale(1.05); }
         }
 
-        .price-number {
-            font-size: 1.125rem;
-            color: var(--navy);
+        /* ===================== PRODUCT HERO ===================== */
+        .s-product {
+            background: var(--navy);
+            background-image: radial-gradient(ellipse 80% 60% at 50% 50%, rgba(0,217,255,0.05) 0%, transparent 70%);
+        }
+        .s-product h1 {
+            font-family: 'DM Sans', sans-serif;
+            font-size: clamp(4rem, 9vw, 8rem);
+            color: var(--white);
+            text-align: center;
+            letter-spacing: -0.02em;
+        }
+        .s-product .tagline {
+            font-size: 1.1rem;
+            color: var(--gold);
+            text-align: center;
+            letter-spacing: 0.2em;
+            text-transform: uppercase;
+            margin-top: 0.5rem;
             font-weight: 500;
         }
+        .s-product .sub { font-size: 1.1rem; color: rgba(255,255,255,0.5); text-align: center; margin-top: 0.75rem; font-weight: 300; }
+        .product-badges { display: flex; gap: 1rem; margin-top: 3rem; flex-wrap: wrap; justify-content: center; }
+        .badge {
+            background: rgba(255,255,255,0.07);
+            border: 1px solid rgba(255,255,255,0.12);
+            border-radius: 100px;
+            padding: 0.6rem 1.4rem;
+            font-size: 0.85rem;
+            color: rgba(255,255,255,0.7);
+            font-weight: 400;
+            letter-spacing: 0.03em;
+        }
 
-        /* Tier Cards */
-        .tier-container {
+        /* ===================== FEATURES ===================== */
+        .s-features { background: white; }
+        .feature-grid {
             display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
-            gap: 2rem;
-            max-width: 1400px;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 1.5rem;
+            max-width: 1100px;
             width: 100%;
             margin-top: 3rem;
         }
+        .feature-card {
+            background: var(--gray);
+            border-radius: 20px;
+            padding: 2.5rem 2rem;
+            transition: transform 0.3s ease, box-shadow 0.3s ease, background 0.3s;
+            cursor: default;
+        }
+        .feature-card:hover { transform: translateY(-6px); box-shadow: 0 20px 50px rgba(1,51,86,0.12); background: white; }
+        .feature-card .ficon { font-size: 2.5rem; margin-bottom: 1rem; }
+        .feature-card h3 { font-family: 'DM Sans', sans-serif; font-size: 1.3rem; color: var(--navy); margin-bottom: 0.75rem; }
+        .feature-card p { font-size: 0.95rem; color: var(--muted); line-height: 1.65; }
+        .feature-card .tech { font-size: 0.75rem; color: var(--accent); font-weight: 500; margin-top: 1rem; letter-spacing: 0.05em; text-transform: uppercase; }
 
-        .tier-card {
+        /* ===================== PRICING ===================== */
+        .s-pricing { background: var(--gray); }
+        .pricing-wrapper { position: relative; max-width: 800px; width: 100%; }
+        .pricing-split {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 2px;
+            border-radius: 20px;
+            overflow: hidden;
+            box-shadow: 0 20px 50px rgba(1,51,86,0.1);
+            margin-top: 2.5rem;
+        }
+        .pricing-col { padding: 2.5rem 2rem; background: white; }
+        .pricing-col.right { background: var(--navy); }
+        .pricing-col h4 { font-family: 'DM Sans', sans-serif; font-size: 1.2rem; margin-bottom: 0.5rem; color: var(--navy); }
+        .pricing-col.right h4 { color: var(--gold); }
+        .pricing-col .price-val { font-size: 1.4rem; font-weight: 600; color: var(--navy); margin: 0.75rem 0; }
+        .pricing-col.right .price-val { color: white; }
+        .pricing-col ul { list-style: none; margin-top: 1rem; }
+        .pricing-col ul li { font-size: 0.9rem; color: var(--muted); padding: 0.4rem 0; }
+        .pricing-col.right ul li { color: rgba(255,255,255,0.6); }
+        .pricing-free {
             background: white;
-            padding: 3rem 2.5rem;
+            border-radius: 16px;
+            padding: 1.5rem 2rem;
+            margin-top: 1.5rem;
+            display: flex;
+            gap: 2rem;
+            align-items: center;
+            box-shadow: 0 10px 30px rgba(1,51,86,0.06);
+            flex-wrap: wrap;
+        }
+        .pricing-free-item { display: flex; align-items: center; gap: 0.75rem; font-size: 0.95rem; color: var(--navy); font-weight: 500; }
+        .pricing-free-item span { font-size: 1.5rem; }
+
+        /* ===================== TIERS ===================== */
+        .s-tiers { background: white; }
+        .tier-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 1.5rem;
+            max-width: 1200px;
+            width: 100%;
+            margin-top: 3rem;
+        }
+        .tier-card {
+            background: var(--gray);
             border-radius: 24px;
-            box-shadow: 0 15px 50px rgba(0, 0, 0, 0.08);
+            padding: 2.5rem 2rem 2rem;
             position: relative;
             transition: transform 0.3s ease, box-shadow 0.3s ease;
         }
-
-        .tier-card:hover {
-            transform: translateY(-10px);
-            box-shadow: 0 25px 80px rgba(0, 0, 0, 0.15);
-        }
-
-        .tier-badge {
+        .tier-card:hover { transform: translateY(-8px); box-shadow: 0 25px 60px rgba(1,51,86,0.12); }
+        .tier-pill {
             position: absolute;
-            top: -15px;
+            top: -14px;
             left: 50%;
             transform: translateX(-50%);
-            background: var(--navy);
-            color: white;
-            padding: 0.5rem 1.5rem;
-            border-radius: 20px;
-            font-size: 0.875rem;
-            font-weight: 600;
-        }
-
-        .tier-card.growth .tier-badge {
-            background: var(--accent);
-        }
-
-        .tier-card.elite .tier-badge {
-            background: var(--gold);
-        }
-
-        .tier-title {
-            font-size: 2rem;
-            color: var(--navy);
-            margin-bottom: 0.5rem;
-            text-align: center;
-        }
-
-        .tier-subtitle {
-            font-size: 1rem;
-            color: #6E6E73;
-            text-align: center;
-            margin-bottom: 1.5rem;
-        }
-
-        .tier-price {
-            font-size: 2.5rem;
+            border-radius: 100px;
+            padding: 0.35rem 1.2rem;
+            font-size: 0.65rem;
             font-weight: 700;
-            color: var(--navy);
-            text-align: center;
-            margin: 1.5rem 0;
+            letter-spacing: 0.12em;
+            text-transform: uppercase;
+            white-space: nowrap;
         }
-
-        .tier-price-note {
-            font-size: 0.875rem;
-            color: #86868B;
-            text-align: center;
-            margin-bottom: 2rem;
-        }
-
-        .tier-features {
-            list-style: none;
-            margin: 2rem 0;
-        }
-
+        .tier-pill.core { background: var(--navy); color: white; }
+        .tier-pill.growth { background: var(--accent); color: white; }
+        .tier-pill.elite { background: var(--gold); color: white; }
+        .tier-card h3 { font-family: 'DM Sans', sans-serif; font-size: 2rem; color: var(--navy); text-align: center; margin-bottom: 0.25rem; }
+        .tier-sub { font-size: 0.85rem; color: var(--muted); text-align: center; margin-bottom: 1.5rem; }
+        .tier-price { text-align: center; font-size: 3rem; font-weight: 700; color: var(--navy); margin: 1rem 0 0.25rem; }
+        .tier-price span { font-size: 1.1rem; font-weight: 400; color: var(--muted); }
+        .tier-note { text-align: center; font-size: 0.8rem; color: var(--muted); margin-bottom: 1.5rem; }
+        .tier-features { list-style: none; border-top: 1px solid rgba(1,51,86,0.08); padding-top: 1.5rem; }
         .tier-features li {
-            padding: 0.75rem 0;
-            border-bottom: 1px solid #F5F5F7;
+            font-size: 0.9rem;
+            color: var(--muted);
+            padding: 0.6rem 0;
+            border-bottom: 1px solid rgba(1,51,86,0.05);
             display: flex;
             align-items: flex-start;
-            font-size: 1rem;
+            gap: 0.6rem;
         }
+        .tier-features li:last-child { border-bottom: none; }
+        .tier-features li::before { content: "✓"; color: var(--accent); font-weight: 700; flex-shrink: 0; }
+        .tier-for { background: rgba(1,51,86,0.05); border-radius: 12px; padding: 1rem; margin-top: 1.5rem; font-size: 0.85rem; color: var(--navy); font-style: italic; text-align: center; }
 
-        .tier-features li:last-child {
-            border-bottom: none;
+        /* ===================== WORKFLOW ===================== */
+        .s-workflow {
+            background: var(--navy-deep);
+            background-image: radial-gradient(ellipse 60% 50% at 30% 60%, rgba(0,217,255,0.06) 0%, transparent 60%);
         }
-
-        .tier-features li::before {
-            content: "✓";
-            color: var(--accent);
+        .s-workflow h2 { color: white; }
+        .workflow-steps { max-width: 800px; width: 100%; margin-top: 3rem; }
+        .workflow-step {
+            display: grid;
+            grid-template-columns: auto 1fr;
+            gap: 2rem;
+            align-items: start;
+            margin-bottom: 2rem;
+        }
+        .step-num-wrap { display: flex; flex-direction: column; align-items: center; }
+        .step-num {
+            width: 52px; height: 52px;
+            border-radius: 50%;
+            background: linear-gradient(135deg, var(--cyan), var(--accent));
+            display: flex; align-items: center; justify-content: center;
+            font-size: 1.2rem;
             font-weight: 700;
-            margin-right: 0.75rem;
-            font-size: 1.25rem;
+            color: var(--navy);
+            box-shadow: 0 4px 20px rgba(0,217,255,0.3);
             flex-shrink: 0;
         }
+        .step-line { width: 2px; flex-grow: 1; background: linear-gradient(to bottom, rgba(0,217,255,0.3), transparent); margin-top: 0.5rem; min-height: 40px; }
+        .step-content { padding-top: 0.75rem; }
+        .step-label { font-size: 0.65rem; letter-spacing: 0.2em; text-transform: uppercase; color: var(--cyan); font-weight: 600; margin-bottom: 0.4rem; }
+        .step-content h3 { font-family: 'DM Sans', sans-serif; font-size: 1.4rem; color: white; margin-bottom: 0.5rem; }
+        .step-content p { font-size: 0.9rem; color: rgba(255,255,255,0.5); line-height: 1.6; }
 
-        .tier-for {
-            background: var(--light-gray);
-            padding: 1.5rem;
-            border-radius: 16px;
-            margin-top: 2rem;
-            text-align: center;
-        }
-
-        .tier-for p {
-            font-size: 0.95rem;
-            font-weight: 500;
-            color: var(--navy);
-        }
-
-        /* Comparison Grid */
-        .comparison-split {
+        /* ===================== COMPARISON ===================== */
+        .s-compare { background: var(--gray); }
+        .compare-split {
             display: grid;
             grid-template-columns: 1fr 1fr;
-            gap: 3rem;
-            max-width: 1200px;
+            gap: 1.5rem;
+            max-width: 1000px;
             width: 100%;
-            margin-top: 3rem;
+            margin-top: 2.5rem;
         }
-
-        .comparison-side {
-            padding: 3rem;
-            border-radius: 24px;
-        }
-
-        .comparison-side.old {
-            background: #F5F5F7;
-        }
-
-        .comparison-side.new {
-            background: linear-gradient(135deg, var(--navy) 0%, #024A77 100%);
-            color: white;
-        }
-
-        .comparison-side h3 {
-            margin-bottom: 2rem;
-        }
-
-        .comparison-side.new h3,
-        .comparison-side.new p,
-        .comparison-side.new li {
-            color: white;
-        }
-
-        .comparison-list {
-            list-style: none;
-        }
-
-        .comparison-list li {
-            padding: 0.75rem 0;
-            display: flex;
-            align-items: center;
-            font-size: 1.125rem;
-        }
-
-        .comparison-list li::before {
-            content: "•";
-            margin-right: 1rem;
-            font-size: 1.5rem;
-            flex-shrink: 0;
-        }
-
-        .comparison-side.old li::before {
-            color: #FF3B30;
-        }
-
-        .comparison-side.new li::before {
-            color: var(--gold);
-        }
-
-        .bottom-line {
-            text-align: center;
-            margin-top: 3rem;
-            font-size: 1.5rem;
-            font-weight: 600;
-            color: var(--navy);
-        }
-
-        /* Partnership Slides */
-        .slide-14 {
-            background: linear-gradient(135deg, #1D1D1F 0%, var(--navy) 100%);
-        }
-
-        .slide-14 h2,
-        .slide-14 p {
-            color: white;
-        }
-
-        /* Membership Cards */
-        .membership-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(400px, 1fr));
-            gap: 2rem;
-            max-width: 1200px;
-            width: 100%;
-            margin-top: 3rem;
-        }
-
-        .membership-card {
-            background: white;
-            padding: 3rem;
-            border-radius: 24px;
-            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.1);
-            position: relative;
-            border: 3px solid transparent;
-            transition: all 0.3s ease;
-        }
-
-        .membership-card:hover {
-            border-color: var(--gold);
-            transform: translateY(-5px);
-            box-shadow: 0 30px 80px rgba(0, 0, 0, 0.15);
-        }
-
-        .membership-badge {
-            background: var(--navy);
-            color: white;
-            padding: 0.5rem 1.5rem;
-            border-radius: 20px;
-            display: inline-block;
-            margin-bottom: 1.5rem;
-            font-size: 0.875rem;
-            font-weight: 600;
-        }
-
-        .membership-card.premium .membership-badge {
-            background: var(--gold);
-        }
-
-        .membership-price {
-            font-size: 3rem;
-            font-weight: 700;
-            color: var(--navy);
-            margin: 1rem 0;
-        }
-
-        .membership-features {
-            list-style: none;
-            margin: 2rem 0;
-        }
-
-        .membership-features li {
-            padding: 0.75rem 0;
-            font-size: 1rem;
+        .compare-col { border-radius: 20px; padding: 2.5rem 2rem; }
+        .compare-col.old { background: white; }
+        .compare-col.new { background: var(--navy); }
+        .compare-col h3 { font-family: 'DM Sans', sans-serif; font-size: 1.3rem; margin-bottom: 1.5rem; }
+        .compare-col.old h3 { color: var(--navy); }
+        .compare-col.new h3 { color: var(--gold); }
+        .compare-list { list-style: none; }
+        .compare-list li {
+            font-size: 0.95rem;
+            padding: 0.65rem 0;
+            border-bottom: 1px solid rgba(0,0,0,0.06);
             display: flex;
             align-items: flex-start;
+            gap: 0.6rem;
         }
+        .compare-col.new .compare-list li { border-bottom-color: rgba(255,255,255,0.08); color: rgba(255,255,255,0.75); }
+        .compare-col.old .compare-list li { color: var(--muted); }
+        .compare-list li:last-child { border-bottom: none; }
+        .compare-col.old .compare-list li::before { content: "✗"; color: #FF3B30; font-weight: 700; flex-shrink: 0; }
+        .compare-col.new .compare-list li::before { content: "✓"; color: var(--gold); font-weight: 700; flex-shrink: 0; }
+        .compare-footer { font-family: 'DM Sans', sans-serif; font-size: 1.4rem; color: var(--navy); margin-top: 2.5rem; max-width: 700px; text-align: center; }
 
-        .membership-features li::before {
-            content: "✓";
-            color: var(--gold);
-            font-weight: 700;
-            margin-right: 0.75rem;
-            font-size: 1.25rem;
-            flex-shrink: 0;
+        /* ===================== PROOF ===================== */
+        .s-proof {
+            background: var(--navy-deep);
+            background-image: radial-gradient(ellipse 60% 40% at 80% 30%, rgba(0,217,255,0.06) 0%, transparent 60%);
         }
-
-        .membership-for {
-            background: var(--light-gray);
-            padding: 1.5rem;
+        .s-proof h2 { color: white; }
+        .industry-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 1.5rem;
+            max-width: 900px;
+            width: 100%;
+            margin-top: 2.5rem;
+        }
+        .industry-card {
+            background: rgba(255,255,255,0.05);
+            border: 1px solid rgba(255,255,255,0.08);
             border-radius: 16px;
-            margin-top: 2rem;
-            font-style: italic;
+            padding: 2rem 1.5rem;
+            text-align: center;
+            transition: all 0.3s ease;
         }
+        .industry-card:hover { background: rgba(255,255,255,0.09); border-color: rgba(212,175,55,0.3); transform: translateY(-4px); }
+        .industry-card .iicon { font-size: 2.5rem; margin-bottom: 1rem; }
+        .industry-card h4 { font-weight: 600; color: white; font-size: 1rem; margin-bottom: 0.5rem; }
+        .industry-card p { font-size: 0.8rem; color: rgba(255,255,255,0.5); line-height: 1.5; }
+        .proof-stat { margin-top: 3rem; font-family: 'DM Sans', sans-serif; font-size: clamp(1.1rem, 2vw, 1.5rem); color: var(--gold); text-align: center; max-width: 700px; }
 
-        /* Math Cards */
-        .math-card {
-            background: linear-gradient(135deg, var(--light-gray) 0%, white 100%);
-            padding: 3rem;
-            border-radius: 24px;
-            max-width: 900px;
+        /* ===================== INVITATION ===================== */
+        .s-invite {
+            background: var(--navy-deep);
+            background-image: radial-gradient(ellipse 50% 50% at 50% 50%, rgba(212,175,55,0.06) 0%, transparent 60%);
+        }
+        .s-invite h2 { color: var(--gold); font-size: clamp(2rem, 5vw, 4rem); }
+        .s-invite p { color: rgba(255,255,255,0.55); font-size: 1.2rem; text-align: center; max-width: 600px; margin-top: 1rem; font-weight: 300; }
+
+        /* ===================== PARTNER ===================== */
+        .s-partner { background: white; }
+        .partner-req { font-size: 0.8rem; color: var(--gold); text-align: center; font-style: italic; margin-top: 0.5rem; }
+        .partner-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(330px, 1fr));
+            gap: 1.5rem;
+            max-width: 1050px;
             width: 100%;
-            margin-top: 2rem;
-            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.08);
+            margin-top: 2.5rem;
         }
+        .partner-card { border-radius: 24px; padding: 2.5rem 2rem; border: 2px solid transparent; transition: all 0.3s ease; }
+        .partner-card.standard { background: var(--gray); }
+        .partner-card.premium { background: var(--navy); }
+        .partner-card:hover { border-color: var(--gold); transform: translateY(-6px); box-shadow: 0 25px 60px rgba(1,51,86,0.12); }
+        .p-badge { display: inline-block; border-radius: 100px; padding: 0.3rem 1rem; font-size: 0.65rem; font-weight: 700; letter-spacing: 0.12em; text-transform: uppercase; margin-bottom: 1rem; }
+        .p-badge.std { background: var(--navy); color: white; }
+        .p-badge.prem { background: var(--gold); color: white; }
+        .partner-card h3 { font-family: 'DM Sans', sans-serif; font-size: 1.8rem; margin-bottom: 0.5rem; }
+        .partner-card.standard h3 { color: var(--navy); }
+        .partner-card.premium h3 { color: white; }
+        .p-price { font-size: 2.5rem; font-weight: 700; margin: 0.75rem 0 0.25rem; }
+        .partner-card.standard .p-price { color: var(--navy); }
+        .partner-card.premium .p-price { color: white; }
+        .p-price-sub { font-size: 0.85rem; color: var(--muted); margin-bottom: 1.5rem; }
+        .partner-card.premium .p-price-sub { color: rgba(255,255,255,0.5); }
+        .p-features { list-style: none; }
+        .p-features li { font-size: 0.9rem; padding: 0.6rem 0; border-bottom: 1px solid rgba(0,0,0,0.06); display: flex; align-items: flex-start; gap: 0.6rem; }
+        .partner-card.premium .p-features li { border-bottom-color: rgba(255,255,255,0.07); color: rgba(255,255,255,0.75); }
+        .partner-card.standard .p-features li { color: var(--muted); }
+        .p-features li:last-child { border-bottom: none; }
+        .p-features li::before { content: "✓"; color: var(--gold); font-weight: 700; flex-shrink: 0; }
+        .p-for { background: rgba(1,51,86,0.06); border-radius: 12px; padding: 1rem; margin-top: 1.5rem; font-size: 0.85rem; font-style: italic; color: var(--navy); text-align: center; }
+        .partner-card.premium .p-for { background: rgba(255,255,255,0.07); color: rgba(255,255,255,0.6); }
 
-        .math-step {
-            margin: 1.5rem 0;
-            padding: 1rem 0;
-            border-bottom: 1px dashed #D2D2D7;
-        }
+        /* ===================== MATH ===================== */
+        .s-math { background: var(--gray); }
+        .math-card { background: white; border-radius: 24px; padding: 3rem; max-width: 900px; width: 100%; box-shadow: 0 20px 60px rgba(1,51,86,0.08); margin-top: 2rem; }
+        .math-row { display: grid; grid-template-columns: 1fr 1fr; gap: 1rem; margin-bottom: 1.5rem; }
+        .math-box { background: var(--gray); border-radius: 16px; padding: 1.5rem; text-align: center; }
+        .math-box.highlight { background: var(--navy); }
+        .mlabel { font-size: 0.75rem; text-transform: uppercase; letter-spacing: 0.1em; color: var(--muted); margin-bottom: 0.5rem; }
+        .math-box.highlight .mlabel { color: rgba(255,255,255,0.5); }
+        .mval { font-size: 1.1rem; color: var(--muted); margin-bottom: 0.25rem; }
+        .math-box.highlight .mval { color: rgba(255,255,255,0.8); }
+        .mbig { font-family: 'DM Sans', sans-serif; font-size: 2rem; color: var(--navy); font-weight: 700; }
+        .math-box.highlight .mbig { color: var(--gold); }
+        .math-divider { text-align: center; color: var(--muted); font-size: 0.9rem; margin: 0.5rem 0 1.5rem; }
+        .math-result { background: linear-gradient(135deg, var(--gold), #B8941E); border-radius: 20px; padding: 2.5rem; text-align: center; margin-top: 1.5rem; }
+        .math-result h4 { font-family: 'DM Sans', sans-serif; font-size: 1.5rem; color: white; margin-bottom: 1.5rem; }
+        .scale-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 1rem; }
+        .scale-item { text-align: center; }
+        .s-label { font-size: 0.8rem; color: rgba(255,255,255,0.7); margin-bottom: 0.25rem; }
+        .s-val { font-size: 1.6rem; font-weight: 700; color: white; }
+        .s-ann { font-size: 0.75rem; color: rgba(255,255,255,0.6); }
+        .math-note { text-align: center; font-size: 0.9rem; color: rgba(255,255,255,0.85); font-style: italic; margin-top: 1.5rem; padding-top: 1.5rem; border-top: 1px solid rgba(255,255,255,0.2); }
 
-        .math-step:last-child {
-            border-bottom: none;
-        }
-
-        /* Empire Projection */
-        .projection-bars {
-            max-width: 900px;
-            width: 100%;
-            margin-top: 3rem;
-        }
-
-        .projection-row {
-            margin: 2rem 0;
-        }
-
-        .projection-label {
-            font-size: 1.25rem;
-            font-weight: 600;
-            color: var(--navy);
-            margin-bottom: 0.75rem;
-        }
-
-        .projection-bar {
-            height: 60px;
-            background: linear-gradient(to right, var(--navy), var(--accent));
+        /* ===================== EMPIRE ===================== */
+        .s-empire { background: white; }
+        .projection-list { max-width: 800px; width: 100%; margin-top: 3rem; }
+        .proj-row { margin-bottom: 1.75rem; }
+        .proj-label { font-size: 0.9rem; font-weight: 600; color: var(--navy); margin-bottom: 0.5rem; }
+        .proj-bar-wrap { background: var(--gray); border-radius: 12px; overflow: hidden; height: 56px; }
+        .proj-bar {
+            height: 100%;
+            background: linear-gradient(90deg, var(--navy), var(--accent));
             border-radius: 12px;
             display: flex;
             align-items: center;
             justify-content: flex-end;
-            padding: 0 2rem;
-            color: white;
-            font-size: 1.5rem;
+            padding-right: 1.5rem;
             font-weight: 700;
+            font-size: 1rem;
+            color: white;
             position: relative;
             overflow: hidden;
         }
-
-        .projection-bar::before {
+        .proj-bar::after {
             content: '';
             position: absolute;
-            top: 0;
-            left: 0;
-            width: 100%;
+            top: 0; left: -100%;
+            width: 60%;
             height: 100%;
-            background: linear-gradient(90deg, transparent, rgba(255,255,255,0.2), transparent);
-            animation: shimmer 2s infinite;
+            background: linear-gradient(90deg, transparent, rgba(255,255,255,0.15), transparent);
+            animation: shimmer 2.5s infinite;
         }
+        @keyframes shimmer { 0% { left: -100%; } 100% { left: 150%; } }
+        .proj-note { font-size: 0.8rem; color: var(--muted); margin-top: 0.4rem; }
+        .empire-box { background: linear-gradient(135deg, var(--gold), #B8941E); border-radius: 20px; padding: 2rem; max-width: 800px; width: 100%; margin-top: 2rem; text-align: center; }
+        .empire-box h4 { font-family: 'DM Sans', sans-serif; font-size: 1.3rem; color: white; margin-bottom: 1rem; }
+        .empire-box p { font-size: 0.95rem; color: rgba(255,255,255,0.85); margin: 0.25rem 0; }
+        .empire-box .big { font-size: 1.8rem; font-weight: 700; color: white; margin-top: 0.75rem; }
 
-        @keyframes shimmer {
-            0% { transform: translateX(-100%); }
-            100% { transform: translateX(100%); }
-        }
+        /* ===================== DECISION ===================== */
+        .s-decision { background: var(--gray); }
+        .decision-split { display: grid; grid-template-columns: 1fr 1fr; gap: 1.5rem; max-width: 1000px; width: 100%; margin-top: 2.5rem; }
+        .decision-col { border-radius: 20px; padding: 2.5rem 2rem; min-height: 480px; display: flex; flex-direction: column; }
+        .decision-col.stay { background: white; }
+        .decision-col.partner { background: var(--navy); }
+        .d-icon { font-size: 3rem; margin-bottom: 1.5rem; }
+        .decision-col h3 { font-family: 'DM Sans', sans-serif; font-size: 1.6rem; margin-bottom: 1.5rem; }
+        .decision-col.stay h3 { color: var(--navy); }
+        .decision-col.partner h3 { color: var(--gold); }
+        .d-list { list-style: none; flex-grow: 1; }
+        .d-list li { font-size: 0.95rem; padding: 0.75rem 0; border-bottom: 1px solid rgba(0,0,0,0.06); }
+        .decision-col.partner .d-list li { border-bottom-color: rgba(255,255,255,0.08); color: rgba(255,255,255,0.75); }
+        .decision-col.stay .d-list li { color: var(--muted); }
+        .d-list li:last-child { border-bottom: none; }
+        .d-outcome { margin-top: 1.5rem; padding-top: 1.5rem; border-top: 2px solid rgba(0,0,0,0.08); font-size: 0.95rem; font-weight: 600; }
+        .decision-col.stay .d-outcome { border-top-color: rgba(1,51,86,0.1); color: var(--navy); }
+        .decision-col.partner .d-outcome { border-top-color: rgba(255,255,255,0.15); color: var(--gold); }
+        .cta-bar { background: var(--gold); border-radius: 16px; padding: 1.5rem 2.5rem; max-width: 1000px; width: 100%; margin-top: 2rem; text-align: center; font-family: 'DM Sans', sans-serif; font-size: 1.4rem; color: white; box-shadow: 0 15px 40px rgba(212,175,55,0.35); }
 
-        .projection-note {
-            text-align: center;
-            margin-top: 2rem;
-            font-size: 1.125rem;
-            color: #6E6E73;
-            font-style: italic;
-        }
-
-        /* Final Decision */
-        .decision-split {
-            display: grid;
-            grid-template-columns: 1fr 1fr;
-            gap: 3rem;
-            max-width: 1200px;
-            width: 100%;
-            margin-top: 3rem;
-        }
-
-        .decision-path {
-            padding: 3rem;
-            border-radius: 24px;
-            min-height: 500px;
-            display: flex;
-            flex-direction: column;
-        }
-
-        .decision-path.stay {
-            background: #F5F5F7;
-        }
-
-        .decision-path.empire {
-            background: linear-gradient(135deg, var(--navy) 0%, #024A77 100%);
-            color: white;
-        }
-
-        .decision-path h3 {
-            margin-bottom: 2rem;
-        }
-
-        .decision-path.empire h3,
-        .decision-path.empire p,
-        .decision-path.empire li {
-            color: white;
-        }
-
-        .path-icon {
-            font-size: 4rem;
-            margin-bottom: 2rem;
-        }
-
-        .decision-list {
-            list-style: none;
-            flex-grow: 1;
-        }
-
-        .decision-list li {
-            padding: 1rem 0;
-            font-size: 1.125rem;
-        }
-
-        .outcome {
-            margin-top: 2rem;
-            padding-top: 2rem;
-            border-top: 2px solid rgba(255,255,255,0.2);
-            font-weight: 600;
-        }
-
-        .decision-path.stay .outcome {
-            border-top-color: #D2D2D7;
-        }
-
-        .cta {
-            text-align: center;
-            margin-top: 3rem;
-            padding: 2rem;
-            background: var(--gold);
-            color: white;
-            border-radius: 20px;
-            font-size: 1.5rem;
-            font-weight: 600;
-            box-shadow: 0 10px 40px rgba(212, 175, 55, 0.3);
-        }
-
-        /* Navigation */
-        .nav-dots {
-            position: fixed;
-            right: 2rem;
-            top: 50%;
-            transform: translateY(-50%);
-            display: flex;
-            flex-direction: column;
-            gap: 0.75rem;
-            z-index: 100;
-        }
-
-        .nav-dot {
-            width: 10px;
-            height: 10px;
-            border-radius: 50%;
-            background: #D2D2D7;
-            cursor: pointer;
-            transition: all 0.3s ease;
-        }
-
-        .nav-dot.active {
-            background: var(--navy);
-            transform: scale(1.3);
-        }
-
-        /* Responsive */
+        /* RESPONSIVE */
         @media (max-width: 768px) {
-            .comparison-split,
-            .decision-split {
-                grid-template-columns: 1fr;
-            }
-
-            .tier-container,
-            .membership-grid {
-                grid-template-columns: 1fr;
-            }
-
-            h1 {
-                font-size: 2.5rem;
-            }
-
-            h2 {
-                font-size: 2rem;
-            }
+            .slide { padding: 4rem 1.5rem; }
+            .compare-split, .decision-split, .pricing-split { grid-template-columns: 1fr; }
+            .math-row, .scale-grid { grid-template-columns: 1fr; }
+            .tier-grid, .partner-grid { grid-template-columns: 1fr; }
+            .feature-grid { grid-template-columns: 1fr; }
+            .industry-grid { grid-template-columns: repeat(2, 1fr); }
+            .pricing-free { flex-direction: column; gap: 1rem; }
+            .nav-dots { display: none; }
         }
     </style>
 </head>
 <body>
-    <!-- Navigation Dots -->
-    <div class="nav-dots" id="navDots"></div>
 
-    <!-- Slide 1: Opening -->
-    <div class="slide slide-1">
-        <div class="slide-number">01</div>
-        <div class="hourglass-icon">⏳</div>
-        <h1>Your Time Is Worth <span class="accent-gold">$1,000/Hour</span></h1>
-        <p class="hero-subtitle">Let us handle the heavy lifting so you can focus on what you love—and scale your business.</p>
+<div class="nav-dots" id="navDots"></div>
+
+<!-- SLIDE 1: OPENING -->
+<div class="slide s1">
+    <div class="slide-num">01</div>
+    <div class="s1-icon">⏳</div>
+    <h1>Your Time Is Worth <span>$1,000/Hour</span></h1>
+    <div class="s1-line"></div>
+    <p>Let us handle the heavy lifting so you can focus on what you love—and scale your business.</p>
+</div>
+
+<!-- SLIDE 2: TEAM BACKUP -->
+<div class="slide s-problem">
+    <div class="slide-num dark">02</div>
+    <div class="section-label">The Reality</div>
+    <h2>Your Team Needs Backup</h2>
+    <div class="card">
+        <div class="card-icon">⏰</div>
+        <h3>Your people are amazing at what they do. But they can't be everywhere at once.</h3>
+        <p>When your team clocks out at 5pm, your clients are still calling at 7pm. Leads are texting on Saturday. Opportunities are happening around the clock. You need a silent partner that works the hours your team can't—so they can focus on what they do best.</p>
     </div>
+</div>
 
-    <!-- Slide 2: Your Team Needs Backup -->
-    <div class="slide slide-2 problem-slide">
-        <div class="slide-number">02</div>
-        <h2>Your Team Needs Backup</h2>
-        <div class="problem-card">
-            <div class="problem-icon">⏰</div>
-            <h3>Your people are amazing at what they do. But they can't be everywhere at once.</h3>
-            <p>When your team clocks out at 5pm, your clients are still calling at 7pm. Leads are texting on Saturday. Opportunities are happening around the clock. You need a silent partner that works the hours your team can't—so they can focus on what they do best.</p>
+<!-- SLIDE 3: SCALING CHALLENGE -->
+<div class="slide s-problem">
+    <div class="slide-num dark">03</div>
+    <div class="section-label">The Problem</div>
+    <h2>The Challenge of Scaling</h2>
+    <div class="card">
+        <div class="card-icon">📊</div>
+        <h3>Growing your team is expensive—and slow.</h3>
+        <p>To add real capacity, you're looking at:</p>
+        <ul>
+            <li><strong>$2,400 – $4,000/month</strong> for each new hire</li>
+            <li>Weeks of recruiting, interviewing, and onboarding</li>
+            <li>Training time before they're fully productive</li>
+            <li>Coverage gaps during vacation, sick days, and turnover</li>
+        </ul>
+    </div>
+</div>
+
+<!-- SLIDE 4: TRANSITION -->
+<div class="slide s-transition">
+    <div class="slide-num dark">04</div>
+    <h2>What if you had a silent partner who worked 24/7, never forgot a detail, and made your team unstoppable?</h2>
+    <div class="key-glow">🔑</div>
+</div>
+
+<!-- SLIDE 5: PRODUCT HERO -->
+<div class="slide s-product">
+    <div class="slide-num">05</div>
+    <h1>Intellabooks</h1>
+    <div class="tagline">Your Silent Partner</div>
+    <div class="sub">Always on. Always learning. Infinitely scalable.</div>
+    <div class="product-badges">
+        <div class="badge">AI Voice + SMS</div>
+        <div class="badge">White-Label CRM</div>
+        <div class="badge">Direct Mail</div>
+        <div class="badge">Ad Management</div>
+        <div class="badge">Always-On Support</div>
+    </div>
+</div>
+
+<!-- SLIDE 6: FEATURES -->
+<div class="slide s-features">
+    <div class="slide-num dark">06</div>
+    <div class="section-label">What We Do</div>
+    <h2>Think of It As Your Perfect Team Member</h2>
+    <div class="feature-grid">
+        <div class="feature-card">
+            <div class="ficon">📞</div>
+            <h3>Answers Every Call & Text</h3>
+            <p>AI voice technology picks up in 2 rings, day or night. Clients hear a friendly voice, get their questions answered, and book appointments instantly.</p>
+            <div class="tech">Advanced conversational AI</div>
+        </div>
+        <div class="feature-card">
+            <div class="ficon">🧠</div>
+            <h3>Captures Every Detail</h3>
+            <p>Every conversation, every preference, every promise made—it all lands in your CRM automatically. Then uses those details to personalize every follow-up, making each client feel like they're your only one.</p>
+            <div class="tech">Smart CRM + dynamic personalization</div>
+        </div>
+        <div class="feature-card">
+            <div class="ficon">💌</div>
+            <h3>Follows Up Forever</h3>
+            <p>Sends texts, emails, even physical cards and letters automatically. Your clients feel genuinely valued without you lifting a finger.</p>
+            <div class="tech">Omni-channel nurture automation</div>
         </div>
     </div>
+</div>
 
-    <!-- Slide 3: The Challenge of Scaling -->
-    <div class="slide slide-3 problem-slide">
-        <div class="slide-number">03</div>
-        <h2>The Challenge of Scaling</h2>
-        <div class="problem-card">
-            <div class="problem-icon">📊</div>
-            <h3>Growing your team is expensive—and slow.</h3>
-            <p style="margin-bottom: 1.5rem;">To add real capacity, you're looking at:</p>
-            <ul style="list-style: none; margin: 1rem 0;">
-                <li style="padding: 0.5rem 0;">• <strong>$2,400 - $4,000/month</strong> for each new hire</li>
-                <li style="padding: 0.5rem 0;">• Weeks of recruiting, interviewing, onboarding</li>
-                <li style="padding: 0.5rem 0;">• Training time before they're fully productive</li>
-                <li style="padding: 0.5rem 0;">• Coverage gaps during vacation, sick days, turnover</li>
-            </ul>
-        </div>
-    </div>
-
-    <!-- Slide 4: Scaling Requires Support -->
-    <div class="slide slide-4 problem-slide">
-        <div class="slide-number">04</div>
-        <h2>Scaling Requires Support</h2>
-        <div class="problem-card">
-            <div class="problem-icon">🚀</div>
-            <h3>Your vision is bigger than your current team can handle alone.</h3>
-            <p>Opening new offices? Serving more clients? Growing your territory? You need systems that scale as fast as your ambition—without overwhelming your people. You need a teammate that never gets tired, never needs training, and makes everyone's job easier.</p>
-        </div>
-    </div>
-
-    <!-- Slide 5: Transition -->
-    <div class="slide slide-5">
-        <div class="slide-number">05</div>
-        <h2>What if you had a silent partner who worked<br>24/7, never forgot a detail, and made your team unstoppable?</h2>
-        <div class="key-icon">🔑</div>
-    </div>
-
-    <!-- Slide 6: Hero Product -->
-    <div class="slide slide-6">
-        <div class="slide-number">06</div>
-        <h1>IntellaBooks</h1>
-        <p class="hero-subtitle">Your Silent Partner</p>
-        <p class="hero-subtitle" style="font-size: 1.25rem; margin-top: 0.5rem;">Always on. Always learning. Infinitely scalable.</p>
-        <div class="dashboard-mockup">
-            <!-- Note: Replace this placeholder with actual dashboard image -->
-            <div style="background: linear-gradient(135deg, #f5f5f7 0%, #e5e5e7 100%); padding: 4rem; text-align: center; color: #86868B;">
-                <p style="font-size: 1.5rem; font-weight: 600;">Dashboard Preview</p>
-                <p style="margin-top: 1rem;">Your IntellaBooks Command Center</p>
-            </div>
-        </div>
-    </div>
-
-    <!-- Slide 7: What It Does -->
-    <div class="slide slide-7">
-        <div class="slide-number">07</div>
-        <h2>Think of It As Your Perfect Team Member</h2>
-        <div class="feature-grid">
-            <div class="feature-card">
-                <div class="feature-icon">📞</div>
-                <h3>Answers Every Call & Text</h3>
-                <p>AI voice technology picks up in 2 rings, day or night. Clients hear a friendly voice, get their questions answered, and book appointments instantly.</p>
-                <p class="tech-note">Powered by advanced conversational AI</p>
-            </div>
-            <div class="feature-card">
-                <div class="feature-icon">🧠</div>
-                <h3>Captures Every Detail</h3>
-                <p>Every conversation, every client preference, every promise made—it all gets added to your CRM automatically. Then uses those details to personalize every email and text, making each client feel like they're your only client.</p>
-                <p class="tech-note">Smart CRM population & dynamic personalization</p>
-            </div>
-            <div class="feature-card">
-                <div class="feature-icon">💌</div>
-                <h3>Follows Up Forever</h3>
-                <p>Sends texts, emails, even physical cards and letters automatically. Your clients feel valued without you lifting a finger.</p>
-                <p class="tech-note">Omni-channel nurture automation</p>
-            </div>
-        </div>
-    </div>
-
-    <!-- Slide 8: Pricing -->
-    <div class="slide slide-8 problem-slide">
-        <div class="slide-number">08</div>
-        <h2>Pricing That Makes Sense</h2>
-        <div class="pricing-card">
-            <p style="margin-bottom: 1.5rem; font-size: 1.125rem;">We keep it simple. Pay by the hour, just like you would for a team member—except this one works around the clock and makes everyone's life easier.</p>
-            
-            <div class="price-highlight">Here's the best part:</div>
-            <ul style="list-style: none; margin: 1.5rem 0;">
-                <li class="price-number" style="padding: 0.75rem 0;">📞 15¢ per minute for calls (totally reasonable)</li>
-                <li class="price-number" style="padding: 0.75rem 0;">🎁 First 1,000 minutes FREE every month (that's over 16 hours!)</li>
-            </ul>
-
-            <div style="background: var(--light-gray); padding: 2rem; border-radius: 16px; margin-top: 2rem; text-align: center;">
-                <h3 style="color: var(--navy); margin-bottom: 1rem;">Adding Another Person</h3>
-                <p class="price-number">$15-$25/hour + benefits</p>
-                <p style="margin-top: 1rem;">Works 40 hours/week, needs time off, limited to one location</p>
-                
-                <div style="margin: 2rem 0; font-size: 2rem;">VS</div>
-                
-                <h3 style="color: var(--gold); margin-bottom: 1rem;">Adding IntellaBooks</h3>
-                <p class="price-number" style="color: var(--gold);">$15-$25/hour (based on what you need)</p>
-                <p style="margin-top: 1rem;">Available 24/7/365, handles unlimited volume, supports your whole team</p>
-            </div>
-
-            <p style="margin-top: 2rem; text-align: center; font-style: italic; font-size: 1.125rem; color: var(--navy); font-weight: 600;">Pick the level that fits where you are today →</p>
-        </div>
-    </div>
-
-    <!-- Slide 9: Core Tier -->
-    <div class="slide slide-9">
-        <div class="slide-number">09</div>
-        <h2>The Three Levels: Your Choice, Your Growth</h2>
-        <div class="tier-container">
-            <div class="tier-card core">
-                <div class="tier-badge">FOUNDATION</div>
-                <h3 class="tier-title">Core</h3>
-                <p class="tier-subtitle">Everything you need to never miss another opportunity</p>
-                <div class="tier-price">$15<span style="font-size: 1.25rem; font-weight: 400;">/hour</span></div>
-                <p class="tier-price-note">Your always-on teammate who never needs a break</p>
-                
-                <ul class="tier-features">
-                    <li>AI answers all your calls (sounds natural, books appointments)</li>
-                    <li>Automatic text message follow-ups</li>
-                    <li>Your business command center (tracks every client interaction)</li>
-                    <li>Instant calendar booking (connects to Google/Outlook)</li>
-                    <li>Email automation</li>
-                    <li>First 1,000 call minutes FREE, then 15¢/min</li>
-                </ul>
-
-                <div class="tier-for">
-                    <p>"You're ready to stop missing calls and start capturing every lead"</p>
-                </div>
-            </div>
-        </div>
-    </div>
-
-    <!-- Slide 10: Growth Tier -->
-    <div class="slide slide-10">
-        <div class="slide-number">10</div>
-        <div class="tier-container">
-            <div class="tier-card growth">
-                <div class="tier-badge">FULL-SERVICE MARKETING</div>
-                <h3 class="tier-title">Growth</h3>
-                <p class="tier-subtitle">When you're ready to nurture clients like never before</p>
-                <div class="tier-price">$20<span style="font-size: 1.25rem; font-weight: 400;">/hour</span></div>
-                <p class="tier-price-note">Your complete marketing team</p>
-                
-                <p style="text-align: center; font-weight: 600; color: var(--navy); margin-bottom: 1rem;">Everything in Core, PLUS:</p>
-                
-                <ul class="tier-features">
-                    <li><strong>Social Media Management</strong> - Consistent posting, engagement, community building across platforms</li>
-                    <li><strong>Professional Email & SMS Design</strong> - Beautiful templates that convert (not generic basics)</li>
-                    <li><strong>Custom Email Designs</strong> - Branded monthly newsletters that match your identity perfectly</li>
-                    <li><strong>Physical Marketing Materials</strong> - Business cards, flyers, signage for your locations</li>
-                    <li><strong>Priority Support</strong> - Faster response when you need help</li>
-                    <li>First 1,000 call minutes FREE, then 15¢/min</li>
-                </ul>
-
-                <div class="tier-for">
-                    <p>"You want a full-service marketing team nurturing your clients at scale"</p>
-                </div>
-            </div>
-        </div>
-    </div>
-
-    <!-- Slide 11: Elite Tier -->
-    <div class="slide slide-11">
-        <div class="slide-number">11</div>
-        <div class="tier-container">
-            <div class="tier-card elite">
-                <div class="tier-badge">SOCIAL & ADS POWERHOUSE</div>
-                <h3 class="tier-title">Elite</h3>
-                <p class="tier-subtitle">When you're building an empire, not just a business</p>
-                <div class="tier-price">$25<span style="font-size: 1.25rem; font-weight: 400;">/hour</span></div>
-                <p class="tier-price-note">Your unfair advantage</p>
-                
-                <p style="text-align: center; font-weight: 600; color: var(--navy); margin-bottom: 1rem;">Everything in Growth, PLUS:</p>
-                
-                <ul class="tier-features">
-                    <li><strong>Professional Ad Management</strong> - We run your Facebook & Google ads with expert testing, tracking, and optimization</li>
-                    <li><strong>Lookalike Targeting</strong> - We model your best existing clients to find more people just like them for your ads</li>
-                    <li><strong>A/B Testing</strong> - We constantly improve what's working based on real data</li>
-                    <li><strong>Your Own Developer Team</strong> - We build custom tools and integrations specifically for your business</li>
-                    <li><strong>White-Glove Support</strong> - Dedicated account manager who knows your business inside and out</li>
-                    <li><strong>Priority Everything</strong> - You're at the front of the line for all support and requests</li>
-                    <li>First 1,000 call minutes FREE, then 15¢/min</li>
-                </ul>
-
-                <div class="tier-for">
-                    <p>"You're scaling fast and need a complete tech + marketing team without the overhead"</p>
-                </div>
-            </div>
-        </div>
-    </div>
-
-    <!-- Slide 12: Side-by-Side Tier Comparison -->
-    <div class="slide slide-12 problem-slide">
-        <div class="slide-number">12</div>
-        <h2>At A Glance: Choose Your Level</h2>
-        <div class="tier-container">
-            <div class="tier-card core">
-                <div class="tier-badge">CORE</div>
-                <div class="tier-price">$15<span style="font-size: 1rem; font-weight: 400;">/hr</span></div>
-                <p style="text-align: center; margin: 1rem 0; font-weight: 600; color: var(--navy);">The Foundation</p>
-                <ul style="list-style: none; font-size: 0.95rem;">
-                    <li style="padding: 0.5rem 0;">✓ AI Voice (inbound/outbound)</li>
-                    <li style="padding: 0.5rem 0;">✓ CRM & Pipeline</li>
-                    <li style="padding: 0.5rem 0;">✓ SMS & Email Automation</li>
-                    <li style="padding: 0.5rem 0;">✓ Calendar Booking</li>
-                    <li style="padding: 0.5rem 0;">✓ 1,000 free minutes/mo</li>
-                </ul>
-            </div>
-
-            <div class="tier-card growth">
-                <div class="tier-badge">GROWTH</div>
-                <div class="tier-price">$20<span style="font-size: 1rem; font-weight: 400;">/hr</span></div>
-                <p style="text-align: center; margin: 1rem 0; font-weight: 600; color: var(--navy);">Full Marketing Team</p>
-                <ul style="list-style: none; font-size: 0.95rem;">
-                    <li style="padding: 0.5rem 0;">✓ Everything in Core</li>
-                    <li style="padding: 0.5rem 0;">✓ Social Media Management</li>
-                    <li style="padding: 0.5rem 0;">✓ Pro Email & SMS Design</li>
-                    <li style="padding: 0.5rem 0;">✓ Custom Email Designs</li>
-                    <li style="padding: 0.5rem 0;">✓ Physical Materials</li>
-                </ul>
-            </div>
-
-            <div class="tier-card elite">
-                <div class="tier-badge">ELITE</div>
-                <div class="tier-price">$25<span style="font-size: 1rem; font-weight: 400;">/hr</span></div>
-                <p style="text-align: center; margin: 1rem 0; font-weight: 600; color: var(--navy);">Social & Ads Powerhouse</p>
-                <ul style="list-style: none; font-size: 0.95rem;">
-                    <li style="padding: 0.5rem 0;">✓ Everything in Growth</li>
-                    <li style="padding: 0.5rem 0;">✓ Professional Ad Management</li>
-                    <li style="padding: 0.5rem 0;">✓ Lookalike Targeting</li>
-                    <li style="padding: 0.5rem 0;">✓ Developer Team</li>
-                    <li style="padding: 0.5rem 0;">✓ Dedicated Account Manager</li>
-                    <li style="padding: 0.5rem 0;">✓ White-Glove Support</li>
-                </ul>
-            </div>
-        </div>
-    </div>
-
-    <!-- Slide 13: Capacity Comparison -->
-    <div class="slide slide-13">
-        <div class="slide-number">13</div>
-        <h2>Adding Capacity vs. Adding Headcount</h2>
-        <div class="comparison-split">
-            <div class="comparison-side old">
-                <h3>Hiring Another Person</h3>
-                <ul class="comparison-list">
-                    <li>$15-$25/hour + benefits</li>
-                    <li>Works 40 hours/week</li>
-                    <li>Needs vacation, sick days, coverage</li>
-                    <li>Requires training and onboarding time</li>
-                    <li>Limited to one location at a time</li>
+<!-- SLIDE 7: PRICING -->
+<div class="slide s-pricing">
+    <div class="slide-num dark">07</div>
+    <div class="section-label">Pricing</div>
+    <h2>Pricing That Makes Sense</h2>
+    <div class="pricing-wrapper">
+        <div class="pricing-split">
+            <div class="pricing-col left">
+                <h4>Adding Another Person</h4>
+                <div class="price-val">$15–$25/hr + benefits</div>
+                <ul>
+                    <li>Works 40 hours/week max</li>
+                    <li>Needs time off and coverage</li>
+                    <li>Limited to one location</li>
                     <li>Turnover means starting over</li>
                 </ul>
             </div>
-            <div class="comparison-side new">
-                <h3>Adding IntellaBooks to Your Team</h3>
-                <ul class="comparison-list">
-                    <li>$15-$25/hour (based on tier)</li>
-                    <li>Available 24/7/365 (168 hrs/week)</li>
-                    <li>Never needs time off—always backing up your team</li>
-                    <li>Ready day one—no training required</li>
-                    <li>Works across all locations simultaneously</li>
-                    <li>Handles the overflow so your people can focus</li>
+            <div class="pricing-col right">
+                <h4>Adding Intellabooks</h4>
+                <div class="price-val">$15–$25/hr (by tier)</div>
+                <ul>
+                    <li>Available 24/7/365</li>
+                    <li>Never needs a break</li>
+                    <li>All locations simultaneously</li>
+                    <li>Ready from day one</li>
                 </ul>
             </div>
         </div>
-        <div class="bottom-line">
-            Same hourly investment. Infinite capacity. Your team stays focused on high-value work.
+    </div>
+</div>
+
+<!-- SLIDE 8: AT A GLANCE - THREE TIERS SIDE BY SIDE -->
+<div class="slide s-tiers">
+    <div class="slide-num dark">08</div>
+    <div class="section-label">Service Tiers</div>
+    <h2>At A Glance: Choose Your Level</h2>
+    <div class="tier-grid">
+        <div class="tier-card">
+            <div class="tier-pill core">CORE</div>
+            <div class="tier-price">$15<span>/hr</span></div>
+            <p style="text-align: center; margin: 0.25rem 0 0; font-size: 0.75rem; font-weight: 400; color: var(--muted);">$2,400/month</p>
+            <p style="text-align: center; margin: 1rem 0; font-weight: 600; color: var(--navy);">The Foundation</p>
+            <ul style="list-style: none; font-size: 0.95rem;">
+                <li style="padding: 0.5rem 0;">✓ AI Receptionist</li>
+                <li style="padding: 0.5rem 0;">✓ Intellabooks CRM</li>
+                <li style="padding: 0.5rem 0;">✓ SMS & Email</li>
+                <li style="padding: 0.5rem 0;">✓ Bookings</li>
+                <li style="padding: 0.5rem 0;">✓ Reporting</li>
+            </ul>
+        </div>
+
+        <div class="tier-card">
+            <div class="tier-pill growth">GROWTH</div>
+            <div class="tier-price">$20<span>/hr</span></div>
+            <p style="text-align: center; margin: 0.25rem 0 0; font-size: 0.75rem; font-weight: 400; color: var(--muted);">$3,200/month</p>
+            <p style="text-align: center; margin: 1rem 0; font-weight: 600; color: var(--navy);">Full Marketing Team</p>
+            <ul style="list-style: none; font-size: 0.95rem;">
+                <li style="padding: 0.5rem 0;">✓ Everything in Core</li>
+                <li style="padding: 0.5rem 0;">✓ Social Media Management</li>
+                <li style="padding: 0.5rem 0;">✓ Website</li>
+                <li style="padding: 0.5rem 0;">✓ Photo Shoot</li>
+                <li style="padding: 0.5rem 0;">✓ Physical Materials</li>
+            </ul>
+        </div>
+
+        <div class="tier-card">
+            <div class="tier-pill elite">ELITE</div>
+            <div class="tier-price">$25<span>/hr</span></div>
+            <p style="text-align: center; margin: 0.25rem 0 0; font-size: 0.75rem; font-weight: 400; color: var(--muted);">$4,000/month</p>
+            <p style="text-align: center; margin: 1rem 0; font-weight: 600; color: var(--navy);">Ads Powerhouse</p>
+            <ul style="list-style: none; font-size: 0.95rem;">
+                <li style="padding: 0.5rem 0;">✓ Everything in Growth</li>
+                <li style="padding: 0.5rem 0;">✓ Professional Ad Management</li>
+                <li style="padding: 0.5rem 0;">✓ Lookalike Targeting</li>
+                <li style="padding: 0.5rem 0;">✓ Developer Team</li>
+                <li style="padding: 0.5rem 0;">✓ Dedicated Account Manager</li>
+                <li style="padding: 0.5rem 0;">✓ White-Glove Support</li>
+            </ul>
         </div>
     </div>
+</div>
 
-    <!-- Slide 14: Proof -->
-    <div class="slide slide-14">
-        <div class="slide-number">14</div>
-        <h2>Already Trusted By Smart Operators</h2>
-        <div class="feature-grid" style="max-width: 900px;">
-            <div class="feature-card">
-                <div class="feature-icon">📊</div>
-                <h3 style="color: var(--dark-gray);">Tax Professionals</h3>
-                <p style="color: var(--dark-gray);">Reactivating 2025 clients automatically</p>
-            </div>
-            <div class="feature-card">
-                <div class="feature-icon">🛡️</div>
-                <h3 style="color: var(--dark-gray);">Insurance Agencies</h3>
-                <p style="color: var(--dark-gray);">Policy renewals that never get missed</p>
-            </div>
-            <div class="feature-card">
-                <div class="feature-icon">🏡</div>
-                <h3 style="color: var(--dark-gray);">Real Estate Teams</h3>
-                <p style="color: var(--dark-gray);">Listing appointments booked 24/7</p>
-            </div>
-            <div class="feature-card">
-                <div class="feature-icon">💆</div>
-                <h3 style="color: var(--dark-gray);">Medical Spas</h3>
-                <p style="color: var(--dark-gray);">Patient reactivation on autopilot</p>
-            </div>
+<!-- SLIDE 9: PROOF -->
+<div class="slide s-proof">
+    <div class="slide-num">09</div>
+    <div class="section-label" style="color: var(--cyan);">Already Trusted</div>
+    <h2>Smart Operators Choose Intellabooks</h2>
+    <div class="industry-grid">
+        <div class="industry-card">
+            <div class="iicon">📊</div>
+            <h4>Tax Professionals</h4>
+            <p>Reactivating 2025 clients automatically</p>
         </div>
-        <p style="margin-top: 3rem; font-size: 1.5rem; font-weight: 600; color: var(--white); text-align: center;">
-            Average client saves 15+ hours per week while closing 30% more deals
-        </p>
-    </div>
-
-    <!-- Slide 15: The Invitation -->
-    <div class="slide slide-15 slide-14">
-        <div class="slide-number">15</div>
-        <h2 style="color: var(--gold);">But here's where your real opportunity begins...</h2>
-        <div class="key-icon" style="color: var(--gold);">✨</div>
-        <p class="hero-subtitle">An exclusive partnership for elite operators who see the bigger picture</p>
-    </div>
-
-    <!-- Slide 16: Partnership Offer -->
-    <div class="slide slide-16">
-        <div class="slide-number">16</div>
-        <h2>Your Exclusive Partner Offer</h2>
-        <p class="hero-subtitle">This offer is invitation-only and not available to the public.</p>
-        <p style="text-align: center; font-size: 0.95rem; color: #D4AF37; margin-top: 1rem; font-weight: 500; font-style: italic;">Partnership requires reselling 2 clients every 4 months to remain in program.</p>
-        
-        <div class="membership-grid">
-            <div class="membership-card">
-                <div class="membership-badge">PARTNERSHIP</div>
-                <h3 class="tier-title">Partner Tier</h3>
-                <div class="membership-price">$1,000<span style="font-size: 1.5rem; font-weight: 400;">/month</span></div>
-                <p style="text-align: center; color: #6E6E73; margin-bottom: 1.5rem;">Flat rate for unlimited reselling</p>
-                
-                <ul class="membership-features">
-                    <li>Access to the full IntellaBooks platform for your business</li>
-                    <li>Branded with "Powered by IntellaBooks"</li>
-                    <li>Full reseller rights at Core ($15/hr), Growth ($20/hr) & Elite ($25/hr) retail pricing</li>
-                    <li><strong>Sell at retail OR higher—you keep 100% of the upsell</strong></li>
-                    <li>Training & support included</li>
-                </ul>
-
-                <div class="membership-for">
-                    <p>"You want to add this to your existing consulting business"</p>
-                </div>
-            </div>
-
-            <div class="membership-card premium">
-                <div class="membership-badge">EXCLUSIVE ELITE OFFER</div>
-                <h3 class="tier-title">Elite Ad Package</h3>
-                <div class="membership-price">$3,000<span style="font-size: 1.5rem; font-weight: 400;">/month</span></div>
-                <p style="text-align: center; color: #6E6E73; margin-bottom: 1.5rem;">The full Elite tier—exclusively for you</p>
-                
-                <p style="text-align: center; font-weight: 600; color: var(--navy); margin-bottom: 1rem;">Because you're an exclusive partner:</p>
-                
-                <ul class="membership-features">
-                    <li><strong>Everything in Elite tier</strong> (normally $25/hr = $4,000/mo)</li>
-                    <li>Social media management across all platforms</li>
-                    <li>Professional ad management (Facebook & Google)</li>
-                    <li>Your own developer team for custom builds</li>
-                    <li>Dedicated account manager</li>
-                    <li>White-glove support with priority everything</li>
-                    <li><strong>You save $1,000/month</strong> as our partner</li>
-                </ul>
-
-                <div class="membership-for">
-                    <p>"You get Elite-level support while building your reseller business"</p>
-                </div>
-            </div>
+        <div class="industry-card">
+            <div class="iicon">🛡️</div>
+            <h4>Insurance Agencies</h4>
+            <p>Policy renewals that never get missed</p>
+        </div>
+        <div class="industry-card">
+            <div class="iicon">🏡</div>
+            <h4>Real Estate Teams</h4>
+            <p>Listing appointments booked 24/7</p>
+        </div>
+        <div class="industry-card">
+            <div class="iicon">💆</div>
+            <h4>Medical Spas</h4>
+            <p>Patient reactivation on autopilot</p>
         </div>
     </div>
+    <p class="proof-stat">Average client saves 15+ hours per week while closing 30% more deals</p>
+</div>
 
-    <!-- Slide 17: The Math -->
-    <div class="slide slide-17 problem-slide">
-        <div class="slide-number">17</div>
-        <h2>Let's Talk About Your Real Income</h2>
-        <p class="hero-subtitle">You pay $1,000/month flat. You resell at retail pricing or higher. You keep every dollar of the upsell.</p>
-        
-        <div class="math-card">
-            <h3 style="color: var(--navy); text-align: center; margin-bottom: 2rem;">How The Partnership Works</h3>
-            
-            <div class="math-step">
-                <p><strong>Your flat monthly cost:</strong> $1,000/month (Partnership tier)</p>
-                <p style="color: #86868B; font-size: 0.95rem; margin-top: 0.25rem;">This covers your business + unlimited reselling rights</p>
-            </div>
-            
-            <div class="math-step">
-                <p><strong>Minimum retail pricing (what you must charge):</strong></p>
-                <ul style="list-style: none; margin-top: 0.5rem;">
-                    <li style="padding: 0.25rem 0;">• Core: $15/hour</li>
-                    <li style="padding: 0.25rem 0;">• Growth: $20/hour</li>
-                    <li style="padding: 0.25rem 0;">• Elite: $25/hour</li>
-                </ul>
-            </div>
+<!-- SLIDE 10: INVITATION -->
+<div class="slide s-invite">
+    <div class="slide-num">10</div>
+    <h2>But here's where your real opportunity begins...</h2>
+    <div class="key-glow" style="color: var(--gold);">✨</div>
+    <p>An exclusive partnership for elite operators who see the bigger picture</p>
+</div>
 
-            <div class="math-step">
-                <p><strong>Your profit strategy:</strong> Sell ABOVE retail and keep 100% of the difference</p>
-            </div>
-
-            <div style="background: linear-gradient(135deg, var(--navy), #024A77); padding: 2.5rem; border-radius: 20px; margin-top: 2rem; color: white;">
-                <h3 style="color: var(--gold); text-align: center; margin-bottom: 1.5rem;">Real Example: Selling Core at $19/hour</h3>
-                
-                <div style="text-align: center; margin: 1.5rem 0;">
-                    <p style="font-size: 1rem; color: rgba(255,255,255,0.8);">Your client pays:</p>
-                    <p style="font-size: 1.125rem; color: white; margin: 0.5rem 0;">$19/hour × 160 hours/month</p>
-                    <p style="font-size: 2rem; font-weight: 700; color: white;">= $3,040/month</p>
-                </div>
-
-                <div style="text-align: center; margin: 1.5rem 0;">
-                    <p style="font-size: 1rem; color: rgba(255,255,255,0.8);">Retail price for Core:</p>
-                    <p style="font-size: 1.125rem; color: white; margin: 0.5rem 0;">$15/hour × 160 hours/month</p>
-                    <p style="font-size: 2rem; font-weight: 700; color: white;">= $2,400/month</p>
-                </div>
-
-                <div style="text-align: center; margin-top: 2rem; padding-top: 2rem; border-top: 2px solid rgba(255,255,255,0.3);">
-                    <p style="font-size: 1rem; color: var(--gold);">Your upsell profit per client:</p>
-                    <p style="font-size: 1.125rem; color: white; margin: 0.5rem 0;">$4/hour × 160 hours</p>
-                    <p style="font-size: 3rem; font-weight: 700; color: var(--gold);">= $640/month</p>
-                </div>
-            </div>
-
-            <div style="background: linear-gradient(135deg, var(--gold), #B8941E); padding: 2.5rem; border-radius: 20px; margin-top: 2rem; color: white; box-shadow: 0 20px 60px rgba(212, 175, 55, 0.3);">
-                <h3 style="color: white; text-align: center; margin-bottom: 1.5rem; font-size: 1.75rem;">Now Scale That 👑</h3>
-                
-                <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 1.5rem; margin-top: 2rem;">
-                    <div style="text-align: center;">
-                        <p style="font-size: 0.95rem; color: rgba(255,255,255,0.9); margin-bottom: 0.5rem;">5 clients @ $19/hr</p>
-                        <p style="font-size: 2rem; font-weight: 700; color: white;">$3,200/mo</p>
-                    </div>
-                    <div style="text-align: center;">
-                        <p style="font-size: 0.95rem; color: rgba(255,255,255,0.9); margin-bottom: 0.5rem;">10 clients @ $19/hr</p>
-                        <p style="font-size: 2rem; font-weight: 700; color: white;">$6,400/mo</p>
-                        <p style="font-size: 0.875rem; color: rgba(255,255,255,0.8); margin-top: 0.25rem;">$76,800/year</p>
-                    </div>
-                    <div style="text-align: center;">
-                        <p style="font-size: 0.95rem; color: rgba(255,255,255,0.9); margin-bottom: 0.5rem;">15 clients @ $19/hr</p>
-                        <p style="font-size: 2rem; font-weight: 700; color: white;">$9,600/mo</p>
-                        <p style="font-size: 0.875rem; color: rgba(255,255,255,0.8); margin-top: 0.25rem;">$115,200/year</p>
-                    </div>
-                    <div style="text-align: center;">
-                        <p style="font-size: 0.95rem; color: rgba(255,255,255,0.9); margin-bottom: 0.5rem;">30 clients @ $19/hr</p>
-                        <p style="font-size: 2rem; font-weight: 700; color: white;">$19,200/mo</p>
-                        <p style="font-size: 0.875rem; color: rgba(255,255,255,0.8); margin-top: 0.25rem;">$230,400/year</p>
-                    </div>
-                </div>
-
-                <p style="text-align: center; margin-top: 2rem; font-size: 1rem; color: rgba(255,255,255,0.95); font-style: italic;">
-                    Your $1,000 monthly cost is covered with just 2 clients. Everything else is pure profit.
-                </p>
-            </div>
-
-            <p style="margin-top: 2rem; text-align: center; font-size: 1.125rem; color: var(--navy); font-weight: 600;">
-                And that's just selling Core at a modest $4 upsell. Imagine Growth or Elite pricing →
-            </p>
+<!-- SLIDE 11: PARTNER OFFER -->
+<div class="slide s-partner">
+    <div class="slide-num dark">11</div>
+    <div class="section-label gold">Exclusive Opportunity</div>
+    <h2>Your Exclusive Partner Offer</h2>
+    <p style="font-size:0.9rem; color: var(--muted); text-align:center; margin-top:0.25rem;">This offer is invitation-only and not available to the public.</p>
+    <p class="partner-req" style="max-width: 700px; margin: 0.75rem auto 0;">To get started, we only ask for 15% of your markup until you reach $6,500 in total monthly revenue.<br>Then it's a flat $1,000/month.</p>
+    <div style="display: flex; justify-content: center; max-width: 600px; width: 100%; margin-top: 2.5rem;">
+        <div class="partner-card standard">
+            <div class="p-badge std">Partnership</div>
+            <h3>Partner Tier</h3>
+            <div class="p-price">$1,000<span style="font-size:1.2rem; font-weight:400; color:var(--muted);">/month</span></div>
+            <p class="p-price-sub">Flat rate for unlimited reselling</p>
+            <ul class="p-features">
+                <li>Full Intellabooks platform for your own business</li>
+                <li>Premium brand materials—Apple products, apparel, business cards</li>
+                <li>White-glove onboarding—we show up with you for your first clients</li>
+                <li><strong>Sell above retail—keep 100% of the upsell</strong></li>
+            </ul>
+            <div class="p-for">"You want to add this to your existing consulting business"</div>
         </div>
     </div>
+</div>
 
-    <!-- Slide 18: Empire Math -->
-    <div class="slide slide-18">
-        <div class="slide-number">18</div>
-        <h2>You Already Have a Network.<br>Let Us Help You Serve Them.</h2>
-        <p class="hero-subtitle">Here's what happens when you position Core at $19/hour instead of $15/hour<br><span style="color: var(--navy); font-weight: 600;">($4/hour upsell = $640/month profit per client)</span></p>
-        
-        <div class="projection-bars">
-            <div class="projection-row">
-                <div class="projection-label">5 clients @ $19/hr</div>
-                <div class="projection-bar" style="width: 33%;">
-                    $3,200/month
-                </div>
-                <p style="margin-top: 0.5rem; color: #6E6E73;">$640 profit per client × 5 = $3,200/month profit (after your $1,000 cost)</p>
+<!-- SLIDE 12: THE MATH -->
+<div class="slide s-math">
+    <div class="slide-num dark">12</div>
+    <div class="section-label">The Numbers</div>
+    <h2 style="font-family: 'DM Sans', sans-serif; font-weight: 600; letter-spacing: -0.01em;">Let's Talk About Your Real Income</h2>
+    <p style="color:var(--muted); text-align:center; max-width:600px; margin-top:0.5rem; font-size:1rem; font-weight: 300;">You pay $1,000/month flat. Resell at retail or higher. Keep every dollar of the upsell.</p>
+    <div class="math-card">
+        <div class="math-row">
+            <div class="math-box">
+                <div class="mlabel" style="font-weight: 400; font-size: 0.7rem;">Your client pays</div>
+                <div class="mval" style="font-weight: 300; font-size: 1rem;">$19/hr × 160 hrs</div>
+                <div class="mbig" style="font-weight: 600;">$3,040/mo</div>
             </div>
-            
-            <div class="projection-row">
-                <div class="projection-label">10 clients @ $19/hr</div>
-                <div class="projection-bar" style="width: 50%;">
-                    $6,400/month
-                </div>
-                <p style="margin-top: 0.5rem; color: #6E6E73;">= $76,800/year passive income</p>
-            </div>
-            
-            <div class="projection-row">
-                <div class="projection-label">15 clients @ $19/hr</div>
-                <div class="projection-bar" style="width: 75%;">
-                    $9,600/month
-                </div>
-                <p style="margin-top: 0.5rem; color: #6E6E73;">= $115,200/year—a complete business transformation</p>
-            </div>
-
-            <div class="projection-row">
-                <div class="projection-label">30 clients @ $19/hr</div>
-                <div class="projection-bar" style="width: 100%;">
-                    $19,200/month
-                </div>
-                <p style="margin-top: 0.5rem; color: #6E6E73;">= $230,400/year—serious generational wealth</p>
+            <div class="math-box">
+                <div class="mlabel" style="font-weight: 400; font-size: 0.7rem;">Core retail price</div>
+                <div class="mval" style="font-weight: 300; font-size: 1rem;">$15/hr × 160 hrs</div>
+                <div class="mbig" style="font-weight: 600;">$2,400/mo</div>
             </div>
         </div>
-
-        <div style="background: linear-gradient(135deg, var(--gold), #B8941E); padding: 3rem; border-radius: 24px; margin-top: 3rem; max-width: 900px; width: 100%; text-align: center; color: white; box-shadow: 0 20px 60px rgba(212, 175, 55, 0.3);">
-            <p style="font-size: 1.5rem; margin-bottom: 1rem; color: white; font-weight: 600;">What If You Sold Growth at $25/hour?</p>
-            <p style="font-size: 1.125rem; color: rgba(255,255,255,0.9); margin-bottom: 0.5rem;">Retail is $20/hour, you sell at $25/hour</p>
-            <p style="font-size: 1.125rem; color: rgba(255,255,255,0.9); margin-bottom: 1rem;">$5/hour upsell × 160 hours = <strong>$800/month profit per client</strong></p>
-            <p style="font-size: 2rem; font-weight: 700; margin-top: 1.5rem; color: white;">10 clients = $8,000/month = $96,000/year</p>
-        </div>
-
-        <div style="background: rgba(1, 51, 86, 0.05); padding: 2rem; border-radius: 20px; margin-top: 3rem; max-width: 900px; width: 100%;">
-            <h3 style="color: var(--navy); text-align: center; margin-bottom: 1rem;">Mix & Match Strategy</h3>
-            <p style="text-align: center; color: #6E6E73; line-height: 1.6;">
-                <strong>5 Core clients @ $19/hr</strong> = $3,200/month<br>
-                <strong>5 Growth clients @ $25/hr</strong> = $4,000/month<br>
-                <strong>3 Elite clients @ $30/hr</strong> = $2,400/month
-            </p>
-            <p style="text-align: center; font-size: 1.75rem; font-weight: 700; color: var(--gold); margin-top: 1.5rem;">
-                Total: $9,600/month = $115,200/year
-            </p>
-        </div>
-
-        <p class="projection-note">And you're still running your consulting business. This is truly passive income that scales.</p>
-    </div>
-
-    <!-- Slide 19: Final Decision -->
-    <div class="slide slide-19">
-        <div class="slide-number">19</div>
-        <h2>Two Paths Forward</h2>
-        
-        <div class="decision-split">
-            <div class="decision-path stay">
-                <div class="path-icon">💭</div>
-                <h3>Continue As You Are</h3>
-                <ul class="decision-list">
-                    <li>Keep your current systems and processes</li>
-                    <li>Manage capacity challenges as they come</li>
-                    <li>Handle after-hours inquiries as you can</li>
-                    <li>Grow at your own pace</li>
-                </ul>
-                <div class="outcome">
-                    This works. You're doing well. And we respect that.
-                </div>
-            </div>
-
-            <div class="decision-path empire">
-                <div class="path-icon">🚀</div>
-                <h3>Partner With Us</h3>
-                <ul class="decision-list">
-                    <li>Use IntellaBooks to support your business 24/7</li>
-                    <li>Offer it to your network at retail pricing (or higher)</li>
-                    <li>Build passive income: $640-$800+ per client, monthly, forever</li>
-                    <li>Help others grow while you build scalable wealth</li>
-                </ul>
-                <div class="outcome">
-                    Recurring revenue. Compound growth. Time freedom.
-                </div>
-            </div>
-        </div>
-
-        <div class="cta">
-            We would love to work with you and get you started as soon as possible.
+        <div class="math-divider" style="font-weight: 300;">Your upsell = $4/hr × 160 hours</div>
+        <div class="math-box highlight" style="padding:1.5rem; text-align:center; border-radius:16px;">
+            <div class="mlabel" style="font-weight: 400; font-size: 0.7rem;">Monthly profit, per client</div>
+            <div class="mbig" style="font-size:3rem; font-weight: 600;">$640/month</div>
         </div>
     </div>
+</div>
 
-    <script>
-        // Navigation dots
-        const slides = document.querySelectorAll('.slide');
-        const navDots = document.getElementById('navDots');
+<!-- SLIDE 13: EMPIRE MATH -->
+<div class="slide s-empire">
+    <div class="slide-num dark">13</div>
+    <div class="section-label" style="font-weight: 400;">The Full Picture</div>
+    <h2 style="font-family: 'DM Sans', sans-serif; font-weight: 600; letter-spacing: -0.01em;">Core at <span style="font-variant-numeric: tabular-nums;">$19</span>/hr — <span style="font-variant-numeric: tabular-nums;">$640</span>/month profit per client</h2>
+    <div class="projection-list">
+        <div class="proj-row">
+            <div class="proj-label">5 clients @ $19/hr</div>
+            <div class="proj-bar-wrap"><div class="proj-bar" style="width:33%;">$3,200/month</div></div>
+            <p class="proj-note">$640 × 5 = $3,200/month profit (after your $1,000 cost)</p>
+        </div>
+        <div class="proj-row">
+            <div class="proj-label">10 clients @ $19/hr</div>
+            <div class="proj-bar-wrap"><div class="proj-bar" style="width:50%;">$6,400/month</div></div>
+            <p class="proj-note">= $76,800/year passive income</p>
+        </div>
+        <div class="proj-row">
+            <div class="proj-label">15 clients @ $19/hr</div>
+            <div class="proj-bar-wrap"><div class="proj-bar" style="width:75%;">$9,600/month</div></div>
+            <p class="proj-note">= $115,200/year — a complete business transformation</p>
+        </div>
+        <div class="proj-row">
+            <div class="proj-label">30 clients @ $19/hr</div>
+            <div class="proj-bar-wrap"><div class="proj-bar" style="width:100%;">$19,200/month</div></div>
+            <p class="proj-note">= $230,400/year — serious generational wealth</p>
+        </div>
+    </div>
+    <div class="empire-box">
+        <h4>What If You Sold Growth at $25/hour?</h4>
+        <p>Retail is $20/hr · You sell at $25/hr · $5 upsell × 160 hours = <strong>$800/month profit per client</strong></p>
+        <div class="big">10 clients = $8,000/month = $96,000/year</div>
+    </div>
+</div>
 
-        slides.forEach((slide, index) => {
-            const dot = document.createElement('div');
-            dot.classList.add('nav-dot');
-            if (index === 0) dot.classList.add('active');
-            
-            dot.addEventListener('click', () => {
-                slide.scrollIntoView({ behavior: 'smooth' });
-            });
-            
-            navDots.appendChild(dot);
+<!-- SLIDE 14: FINAL DECISION -->
+<div class="slide s-decision">
+    <div class="slide-num dark">14</div>
+    <div class="section-label">Your Choice</div>
+    <h2>Two Paths Forward</h2>
+    <div class="decision-split">
+        <div class="decision-col stay">
+            <div class="d-icon">💭</div>
+            <h3>Continue As You Are</h3>
+            <ul class="d-list">
+                <li>Keep your current systems and processes</li>
+                <li>Manage capacity challenges as they come</li>
+                <li>Handle after-hours inquiries as you can</li>
+                <li>Grow at your own pace</li>
+            </ul>
+            <div class="d-outcome">This works. You're doing well. And we respect that.</div>
+        </div>
+        <div class="decision-col partner">
+            <div class="d-icon">🚀</div>
+            <h3>Partner With Us</h3>
+            <ul class="d-list">
+                <li>Intellabooks supports your business 24/7</li>
+                <li>Offer it to your network at retail or higher</li>
+                <li>Build passive income: $640–$800+ per client, monthly, forever</li>
+                <li>Help others grow while you build scalable wealth</li>
+            </ul>
+            <div class="d-outcome">Recurring revenue. Compound growth. Time freedom.</div>
+        </div>
+    </div>
+    <div class="cta-bar">We would love to work with you and get you started as soon as possible. ✨</div>
+</div>
+
+<script>
+    const slides = document.querySelectorAll('.slide');
+    const navDots = document.getElementById('navDots');
+
+    slides.forEach((_, i) => {
+        const dot = document.createElement('div');
+        dot.className = 'nav-dot' + (i === 0 ? ' active' : '');
+        dot.addEventListener('click', () => slides[i].scrollIntoView({ behavior: 'smooth' }));
+        navDots.appendChild(dot);
+    });
+
+    const observer = new IntersectionObserver((entries) => {
+        entries.forEach(entry => {
+            if (entry.isIntersecting) {
+                entry.target.classList.add('visible');
+                const idx = [...slides].indexOf(entry.target);
+                document.querySelectorAll('.nav-dot').forEach((d, i) => {
+                    d.classList.toggle('active', i === idx);
+                });
+            }
         });
+    }, { threshold: 0.35 });
 
-        // Update active dot on scroll
-        const observerOptions = {
-            root: null,
-            threshold: 0.5
-        };
-
-        const observer = new IntersectionObserver((entries) => {
-            entries.forEach(entry => {
-                if (entry.isIntersecting) {
-                    const index = Array.from(slides).indexOf(entry.target);
-                    document.querySelectorAll('.nav-dot').forEach((dot, i) => {
-                        dot.classList.toggle('active', i === index);
-                    });
-                }
-            });
-        }, observerOptions);
-
-        slides.forEach(slide => observer.observe(slide));
-
-        // Add staggered animation delays
-        slides.forEach((slide, index) => {
-            slide.style.animationDelay = `${index * 0.05}s`;
-        });
-    </script>
+    slides.forEach(s => observer.observe(s));
+</script>
 </body>
 </html>
